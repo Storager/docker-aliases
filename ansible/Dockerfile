@@ -1,18 +1,20 @@
 # https://www.ansible.com/
 #
+#################### Usage ###########################
 # docker run --rm \
 # 	-it \
 # 	-v ${PWD}/hosts:/etc/ansible/hosts \
 # 	-v ${PWD}/ansible.cfg:/etc/ansible/ansible.cfg \
 # 	-v ${HOME}/.ssh:/root/.ssh:ro \
-# 	ansible all -m ping
-#
+# 	ansible:latest ansible  all -m ping
+#################### Build ############################
+# ANSIBLE_BUILD_VERSION=2.9.8; docker build --build-arg ANS_VER=$ANSIBLE_BUILD_VERSION  -t storager/ansible:$ANSIBLE_BUILD_VERSION .
+#######################################################
 FROM alpine:latest
-LABEL maintainer "Christian Koep <christiankoep@gmail.com>"
-
+ARG ANS_VER 7.0.0
 RUN builddeps=' \
-		python-dev \
-		py2-pip \
+		python3-dev \
+		py3-pip \
 		musl-dev \
 		openssl-dev \
 		libffi-dev \
@@ -20,16 +22,16 @@ RUN builddeps=' \
 		' \
 	&& apk --no-cache add \
 	ca-certificates \
-	python \
-	py-paramiko \
-	py-yaml \
-	py-jinja2 \
-	py-httplib2 \
-	$builddeps \
-	&& pip install --upgrade pip \
+	python3 \
+	py3-paramiko \
+	py3-yaml \
+	py3-jinja2 \
+	py3-httplib2 \
+	$builddeps
+RUN	pip install --upgrade pip \
 	&& pip install \
-		ansible \
-		six \
-	&& apk del --purge $builddeps
+		ansible==$ANS_VER \
+		six
+RUN apk del --purge $builddeps
 
-ENTRYPOINT [ "ansible" ]
+#ENTRYPOINT [ "ansible" ]
