@@ -1,0 +1,1 @@
+alias 'khazin=docker run -it --rm --env-file .evn.khazin storager/khazin'
