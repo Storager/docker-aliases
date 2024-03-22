@@ -1,0 +1,35 @@
+# Use in alias in WSL
+# alias 'idea=docker compose -p idea -f /home/dtsirul/docker-aliases/intellij-idea/docker-compose.yml run -d --rm idea'
+version: '3.9'
+services:
+  idea:
+    image: storager/intellij-idea # Latest is for start only Won't work with docker compose build.
+    build:
+      context: ./
+      args:
+        - IDEA_VERSION=${IDEA_VERSION:-ideaIC-2023.3.5}
+        # Tested
+        # ideaIC-2021.3.3
+        # ideaIC-2022.2.4 ?
+        # ideaIC-2022.3.3
+        # ideaIC-2023.3.5
+
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /mnt/wslg:/mnt/wslg
+      - root_volume:/root
+    environment:
+      - DISPLAY=${DISPLAY}
+      - WAYLAND_DISPLAY=${WAYLAND_DISPLAY}
+      - XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR}
+      - PULSE_SERVER=${PULSE_SERVER}
+  version_tag:
+    extends: idea
+    image: storager/intellij-idea:${IDEA_VERSION:-latest}
+volumes:
+  root_volume:
+    driver: local
+    driver_opts:
+      type: none
+      device: "${IDEA_HOME:-${HOME}/docker-apps/idea}"
+      o: bind

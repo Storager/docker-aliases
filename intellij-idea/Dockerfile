@@ -17,10 +17,13 @@
 #    -v ${HOME}/docker-apps/idea/jdks:/root/.jdks \
 #    storager/intellij-idea
 FROM busybox as Unarchiver
-ADD https://download.jetbrains.com/idea/ideaIC-2023.3.5.tar.gz /tmp
+ARG IDEA_VERSION
+# ADD https://download.jetbrains.com/idea/ideaIC-2023.3.5.tar.gz /tmp
+ADD https://download.jetbrains.com/idea/${IDEA_VERSION}.tar.gz /tmp
 # ADD /ideaIC-2023.3.5.tar.gz /tmp/
+ENV IDEA_VERSION=${IDEA_VERSION}
 RUN cd /tmp \
-    && tar -xvvf ideaIC-2023.3.5.tar.gz \
+    && tar -xvvf *.tar.gz \
     && mv idea-IC* ./idea
 
 
@@ -31,12 +34,12 @@ RUN useradd storager -m -s /bin/bash \
     && chown storager:storager /app \
     && apt-get update \
     && apt-get install -y \
-        libxtst6 \
+        fontconfig \
+        libfreetype6 \
+        libxrender1 \
         libxi6 \
-	libxrender1 \
-	libfreetype6 \
-	fontconfig \
-	ttf-dejavu
+	    libxtst6 \
+	    ttf-dejavu
 USER storager
 COPY --from=Unarchiver --chown=storager:storager /tmp/idea /app/
 USER root
