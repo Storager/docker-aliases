@@ -1,5 +1,5 @@
 # Use in alias in WSL
-# alias 'idea=docker compose -p idea -f /home/dtsirul/docker-aliases/intellij-idea/docker-compose.yml run -d --rm idea'
+# alias 'idea=docker compose -p idea -f $HOME/docker-aliases/intellij-idea/docker-compose.yml run -d --rm idea'
 version: '3.9'
 services:
   idea:
